@@ -1,0 +1,91 @@
+<div class="col-md-6">
+    <div id="reviews">
+        <ul class="reviews">
+            {% if request.user.is_authenticated %}
+            <a id="add_review">Write a Review</a>
+            {% else %}
+            <a href="{% url 'users:login' %}?next={{ request.path }}">
+                Log in to write your own review.
+            </a>
+            {% endif %}
+            {% for review in product_reviews %}
+            <li>
+                <div class="review-heading">
+                    <h5 class="name">{{ review.user.get_full_name }}</h5>
+                    <p class="date">{{ review.date }}</p>
+                    <div class="review-rating">
+                        {% if review.rating == 1 %}
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        {% elif review.rating == 2 %}
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        {% elif review.rating == 3 %}
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        {% elif review.rating == 4 %}
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-o"></i>
+                        {% elif review.rating == 5 %}
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="review-body">
+                    <p>{{ review.content }}</p>
+                </div>
+            </li>
+            {% empty %}
+            <li>
+                <div class="review-heading">
+                    <h5 class="name">No product reviews yet.</h5>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="reviews-pagination">
+            <li class="active">1</li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+        </ul>
+    </div>
+</div>
+<!-- Review Form -->
+<div class="col-md-3">
+    <div id="review_errors"></div>
+    <div id="review-form">
+        <form class="review-form" method="post" action="" id="post_review">
+            {% csrf_token %}
+            {{ review_form.title }}
+            {{ review_form.content }}
+            <div class="input-rating">
+                <span>Your Rating: </span>
+                <div class="stars">
+                    {{ review_form.rating }}
+                </div>
+            </div>
+            <input type="hidden" id="id_slug" value="{{ p.slug }}" />
+            <input type="submit" name="submit" id="submit" class="primary-btn" value="Submit" />
+            <input type="submit" id="cancel_review" class="primary-btn" value="Cancel" />
+        </form>
+    </div>
+</div>
+<!-- /Review Form -->

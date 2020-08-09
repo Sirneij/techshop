@@ -1,0 +1,120 @@
+{% extends 'baseindex.html' %}
+{% block meta %}{{ meta_keywords }}{% endblock meta %}
+{% block title %} - Shopping Basket {% endblock title %}
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}" />{% endblock css %}
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-content-right">
+                    <div class="woocommerce">
+                        {% if cart_items %}
+                        <h2 style="text-align:center;">Your Cart</h2>
+                        <table cellspacing="0" class="shop_table cart">
+                            <thead>
+                                <tr>
+                                    <th class="product-remove">&nbsp;</th>
+                                    <th class="product-thumbnail">&nbsp;</th>
+                                    <th class="product-name">Product</th>
+                                    <th class="product-price">Price per unit</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-quantity">&nbsp;</th>
+                                    <th class="product-subtotal">Total</th>
+                                </tr>
+                            </thead>
+                            {% for item in cart_items %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <tbody>
+                                    <tr class="cart_item">
+                                        <td class="product-remove">
+                                            <input type="hidden" name="item_id" value="{{ item.id }}" />
+                                            <input type="submit" name="submit" value="×" class="remove" title="Remove this item" />
+                                        </td>
+                                        <td class="product-thumbnail">
+                                            <a href="{{ item.product.get_absolute_url }}"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ item.product.main_image.url }}"></a>
+                                        </td>
+                                        <td class="product-name">
+                                            <a href="{{ item.product.get_absolute_url }}">{{ item.name }}</a>
+                                        </td>
+                                        <td class="product-price">
+                                            <span class="amount">{{ item.price|currency }}</span>
+                                        </td>
+                                        <td class="product-quantity">
+                                            <div class="quantity buttons_added">
+                                                <input type="button" class="minus" value="-">
+                                                <input name="quantity" value="{{ item.quantity }}" type="number" size="4" class="input-text qty text" title="Qty" step="1" />
+                                                <input type="hidden" name="product_id" value="{{ item.id }}" />
+                                                <input type="button" class="plus" value="+">
+                                            </div>
+                                        </td>
+                                        <td class="product-quantity">
+                                            <input type="submit" name="submit" value="Update" />
+                                        </td>
+                                        <td class="product-subtotal">
+                                            <span class="amount">{{ item.total|currency }}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </form>
+                            {% endfor %}
+                        </table>
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+                            <table cellspacing="0" class="shop_table cart">
+                                <tbody>
+                                    <tr>
+                                        <td class="actions" colspan="6">
+                                            <div class="coupon">
+                                                <label for="coupon_code">Coupon:</label>
+                                                <input type="text" placeholder="Coupon code" value="" id="coupon_code" class="input-text" name="coupon_code">
+                                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>
+                                                    Apply Coupon</button>
+                                            </div>
+                                            <a href="{% url 'shop:product_store' %}" class="primary-btn order-submit">
+                                                Continue Shopping</a>
+                                            <input type="submit" name="submit" value="Checkout" class="add-to-cart-btn">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                        {% else %}
+                        <h2 style="text-align:center;">Your Cart Is Empty</h2>
+                        {% endif %}
+                        <div class="cart-collaterals">
+                            {% if cart_items %}
+                            <div class="cart_totals ">
+                                <h2>Cart Totals</h2>
+                                <table cellspacing="0">
+                                    <tbody>
+                                        <tr class="cart-subtotal">
+                                            <th>Cart Subtotal</th>
+                                            <td><span class="amount">{{ cart_subtotal|currency }}</span></td>
+                                        </tr>
+                                        <tr class="shipping">
+                                            <th>Shipping and Handling</th>
+                                            <td>Free Shipping</td>
+                                        </tr>
+                                        <tr class="order-total">
+                                            <th>Order Total</th>
+                                            <td><strong><span class="amount">{{ cart_subtotal|currency }}</span></strong> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

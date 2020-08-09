@@ -1,0 +1,178 @@
+{% extends 'baseindex.html' %}
+{% block meta %}{{ meta_keywords }}{% endblock meta %}
+{% block title %} - {{ user.get_full_name }} {% endblock title %}
+{% block content %}
+{% load static %}
+{% load thumbnail %}
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- Product main img -->
+            <div class="col-md-5 col-md-push-2">
+                <div id="product-main-img">
+                    <div class="product-preview">
+                        {% if user.userprofile.profile_pics %}
+                        <img src="{% thumbnail user.userprofile.profile_pics 300x240 %}" alt="">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- /Product main img -->
+            <!-- Product thumb imgs -->
+            <div class="col-md-2  col-md-pull-5">
+                <div id="product-imgs">
+                    {% if user.userprofile.profile_pics %}
+                    <div class="product-preview">
+                        <img src="{% thumbnail user.userprofile.profile_pics 300x240 %}" alt="">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- /Product thumb imgs -->
+            <!-- Product details -->
+            <div class="col-md-5">
+                <div class="product-details">
+                    <h2 class="product-name">{{ user.get_full_name }}</h2>
+                    <div>
+                        {% if user.userprofile.date_of_birth %}
+                        <h3 class="product-price">{{ user.userprofile.date_of_birth }}</h3>
+                        {% endif %}
+                    </div>
+                    <ul class="product-links">
+                        <li>Phone number:</li>
+                        <li><a href="#">{{ user.userprofile.phone_number }}</a></li><br />
+                        <li>Email:</li>
+                        <li><a href="#">{{ user.email }}</a></li><br />
+                        <li>More preferred Shipping Address:</li>
+                        <li><a href="#">{{ user.userprofile.shipping_address_1 }}</a></li><br />
+                        <li>More preferred Shipping City:</li>
+                        <li><a href="#">{{ user.userprofile.city }}</a></li><br />
+                        <li>More preferred Shipping Country:</li>
+                        <li><a href="#">{{ user.userprofile.country }}</a></li><br />
+                    </ul>
+                    <div>
+                        <br>
+                        <br>
+                        <h2 class="product-name">Order History</h2>
+                        {% for order in orders %}
+                        <span class="product-available"><a href="{{ order.get_absolute_url }}">Order #{{ order.id }}</a> - {{ order.date|date }}</span>
+                        {% empty %}
+                        <span class="product-available">You have no past orders.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!-- /Product details -->
+            <!-- Product tab -->
+            <div class="col-md-12">
+                <div id="product-tab">
+                    <!-- product tab nav -->
+                    <ul class="tab-nav">
+                        <li class="active"><a data-toggle="tab" href="#tab1">User profile</a></li>
+                        <li><a data-toggle="tab" href="#tab2">Shipping/Billing details</a></li>
+                        <li><a data-toggle="tab" href="#tab3">Order History</a></li>
+                    </ul>
+                    <!-- /product tab nav -->
+                    <!-- product tab content -->
+                    <div class="tab-content">
+                        <!-- tab1  -->
+                        <div id="tab1" class="tab-pane fade in active">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form action="." method="POST" id="personForm">
+                                        {% csrf_token %}
+                                        <!-- Shiping Details -->
+                                        <div class="billing-details">
+                                            <div class="form-group">
+                                                {{ profile_form.first_name }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.last_name }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.email }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.phone }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.shipping_address_1 }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.shipping_address_2 }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.country }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.city }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.shipping_zip }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.profile_pics }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.date_of_birth }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ profile_form.phone_number }}
+                                            </div>
+                                        </div>
+                                        <!-- /Shiping Details -->
+                                </div>
+                                <!-- Order Details -->
+                                <div class="col-md-12 order-details">
+                                    <input type="submit" value="Save Information" class="primary-btn order-submit" />
+                                </div>
+                                <!-- /Order Details -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /tab1  -->
+                    <!-- tab2  -->
+                    <div id="tab2" class="tab-pane fade in">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><a href="{% url 'users:order_info' %}">Edit Billing/Shipping Information</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /tab2  -->
+                    <!-- tab3  -->
+                    <div id="tab3" class="tab-pane fade in">
+                        <div class="row">
+                            <!-- Reviews -->
+                            <div class="col-md-12">
+                                <div id="reviews">
+                                    <ul class="reviews">
+                                        {% for order in orders %}
+                                        <li>
+                                            <span class="product-available"><a href="{{ order.get_absolute_url }}">Order #{{ order.id }}</a> - {{ order.date|date }}</span>
+                                            {% empty %}
+                                            <span class="product-available">You have no past orders.</span>
+                                            {% endfor %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /tab3  -->
+                </div>
+                <!-- /product tab content  -->
+            </div>
+        </div>
+        <!-- /product tab -->
+    </div>
+    <!-- /row -->
+</div>
+<!-- /container -->
+</div>
+<!-- /SECTION -->
+{% endblock content %}

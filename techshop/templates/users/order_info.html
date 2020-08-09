@@ -1,0 +1,82 @@
+{% extends 'baseindex.html' %}
+{% block meta %}{{ meta_keywords }}{% endblock meta %}
+{% block title %} - Edit Order Information {% endblock title %}
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Checkout</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="{% url 'shop:index' %}">Home</a></li>
+                    <li class="active">Checkout</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <form action="." method="POST" id="personForm">
+                    {% csrf_token %}
+                    <!-- Shiping Details -->
+                    <div class="billing-details">
+                        <div class="section-title">
+                            <h3 class="title" style="text-align:center;">Shipping address</h3>
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.email }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.phone }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.shipping_address_1 }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.shipping_address_2 }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.country }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.city }}
+                        </div>
+                        <div class="form-group">
+                            {{ user_form.shipping_zip }}
+                        </div>
+                    </div>
+                    <!-- /Shiping Details -->
+            </div>
+            <!-- Order Details -->
+            <div class="col-md-12 order-details">
+                <input type="submit" value="Save Information" class="primary-btn order-submit" />
+            </div>
+            <!-- /Order Details -->
+            </form>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+{% endblock content %}

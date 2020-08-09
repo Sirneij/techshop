@@ -1,0 +1,124 @@
+{% extends 'baseindex.html' %}
+{% block meta %}{{ meta_keywords }}{% endblock meta %}
+{% block title %} - {{ page_title }} {% endblock title %}
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Checkout</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="{% url 'shop:index' %}">Home</a></li>
+                    <li class="active">Checkout</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-7">
+                <form method="POST" id="personForm">
+                    {% csrf_token %}
+                    <!-- Shiping Details -->
+                    <div class="billing-details">
+                        <div class="section-title">
+                            <h3 class="title">Shipping address</h3>
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.email }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.phone }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.shipping_address_1 }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.shipping_address_2 }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.country }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.city }}
+                        </div>
+                        <div class="form-group">
+                            {{ Order_form.shipping_zip }}
+                        </div>
+                    </div>
+                    <!-- /Shiping Details -->
+            </div>
+            <!-- Order Details -->
+            <div class="col-md-5 order-details">
+                <div class="section-title text-center">
+                    <h3 class="title">Your Order</h3>
+                </div>
+                <div class="order-summary">
+                    <div class="order-col">
+                        <div><strong>PRODUCT</strong></div>
+                        <div><strong>TOTAL</strong></div>
+                    </div>
+                    <div class="order-products">
+                        {% for item in cart_items %}
+                        <div class="order-col">
+                            <div>{{ item.quantity }}x {{ item.name }}</div>
+                            <div>{{ item.price|currency }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="order-col">
+                        <div>Shiping</div>
+                        <div><strong>FREE</strong></div>
+                    </div>
+                    <div class="order-col">
+                        <div><strong>TOTAL</strong></div>
+                        <div><strong class="order-total">{{ cart_subtotal|currency }}</strong></div>
+                    </div>
+                </div>
+                <input type="submit" value="Place Order" class="primary-btn order-submit" name="submit" />
+            </div>
+            <!-- /Order Details -->
+            </form>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+<script>
+$("#id_country").change(function() {
+    var url = $("#personForm").attr("data-cities-url");
+    var countryId = $(this).val();
+
+    $.ajax({
+        url: url,
+        data: {
+            'country': countryId
+        },
+        success: function(data) {
+            $("#id_city").html(data);
+        }
+    });
+
+});
+</script>
+{% endblock content %}

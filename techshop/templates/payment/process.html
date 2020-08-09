@@ -1,0 +1,114 @@
+{% extends 'baseindex.html' %}
+{% block title %} - {{ page_title }} {% endblock title %}
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Checkout</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="{% url 'shop:index' %}">Home</a></li>
+                    <li class="active">Checkout</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <form method="POST" id="payment" action=".">
+                    {% csrf_token %}
+                    <!-- Card Details -->
+                    <div class="billing-details">
+                        <div class="section-title">
+                            <h3 class="title">Card details</h3>
+                        </div>
+                        <div class="form-group">
+                            <input id="card-number" class="input" type="text" name="card-number" placeholder="Card Number">
+                        </div>
+                        <div class="form-group">
+                            <input id="cvv" class="input" type="text" name="cvv" placeholder="CVV">
+                        </div>
+                        <div class="form-group">
+                            <input id="expiration-date" class="input" type="text" name="expiration-date" placeholder="Expiration Date">
+                        </div>
+                    </div>
+                    <!-- /Card Details -->
+                    <button class="primary-btn order-submit">Pay</button>
+            </div>
+            </form>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+{% block script %}
+<!-- Load the required client component. -->
+<script src="https://js.braintreegateway.com/web/3.29.0/js/client.min.js"></script>
+<!-- Load Hosted Fields component. -->
+<script src="https://js.braintreegateway.com/web/3.29.0/js/hosted-fields.min.js"></script>
+<script>
+var form = document.querySelector('#payment');
+var submit = document.querySelector('input[type="submit"]');
+
+braintree.client.create({
+    authorization: '{{ client_token }}'
+}, function(clientErr, clientInstance) {
+    if (clientErr) {
+        console.error(clientErr);
+        return;
+    }
+
+    braintree.hostedFields.create({
+        client: clientInstance,
+        styles: {
+            'input': { 'font-size': '13px' },
+            'input.invalid': { 'color': 'red' },
+            'input.valid': { 'color': 'green' }
+        },
+        fields: {
+            number: { selector: '#card-number' },
+            cvv: { selector: '#cvv' },
+            expirationDate: { selector: '#expiration-date' }
+        }
+    }, function(hostedFieldsErr, hostedFieldsInstance) {
+        if (hostedFieldsErr) {
+            console.error(hostedFieldsErr);
+            return;
+        }
+
+        submit.removeAttribute('disabled');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            hostedFieldsInstance.tokenize(function(tokenizeErr, payload) {
+                if (tokenizeErr) {
+                    console.error(tokenizeErr);
+                    return;
+                }
+                // set nonce to send to the server
+                document.getElementById('nonce').value = payload.nonce;
+                // submit form
+                document.getElementById('payment').submit();
+            });
+        }, false);
+    });
+});
+</script>
+{% endblock script %}
+{% endblock content %}

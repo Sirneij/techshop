@@ -1,0 +1,54 @@
+{% extends 'baseindex.html' %}
+{% block meta %}{{ meta_keywords }}{% endblock meta %}
+{% block title %} - Order Receipt {% endblock title %}
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}" />{% endblock css %}
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-content-right">
+                    <div class="woocommerce">
+                        <h2 style="text-align:center;">Your order has been placed!</h2>
+                        <table cellspacing="0" class="shop_table cart">
+                            <thead>
+                                <tr>
+                                    <th class="product-name">Product</th>
+                                    <th class="product-price">Price per unit</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-subtotal">Total</th>
+                                </tr>
+                            </thead>
+                            {% for item in order_items %}
+                            <tbody>
+                                <tr class="cart_item">
+                                    <td class="product-name">
+                                        <span>{{ item.name }}</span>
+                                    </td>
+                                    <td class="product-price">
+                                        <span class="amount">{{ item.price }}</span>
+                                    </td>
+                                    <td class="product-quantity">
+                                        <div class="quantity buttons_added">
+                                            {{ item.quantity }}
+                                        </div>
+                                    </td>
+                                    <td class="product-subtotal">
+                                        <span class="amount">{{ item.get_cost|currency }}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                        <a href="{% url 'payment:process' %}" class="primary-btn order-submit">Make payment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

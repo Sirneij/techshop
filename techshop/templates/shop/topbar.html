@@ -1,0 +1,157 @@
+{% load static %}
+{% load custom_tags %}
+<!-- HEADER -->
+<header>
+    <!-- TOP HEADER -->
+    <div id="top-header">
+        <div class="container">
+            <ul class="header-links pull-left">
+                <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+            </ul>
+            <ul class="header-links pull-right">
+                <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'users:user_account' request.user.id %}"><i class="fa fa-user-o"></i> Hi, {{ user.get_full_name }}</a></li>
+                <li><a href="{% url 'users:logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'users:login' %}"><i class="fa fa-pull-right"></i> Login</a></li>
+                <li><a href="{% url 'users:signup' %}"><i class="fa fa-pull-left"></i> Signup</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <!-- /TOP HEADER -->
+    <!-- MAIN HEADER -->
+    <div id="header">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- LOGO -->
+                <div class="col-md-3">
+                    <div class="header-logo">
+                        <a href="{% url 'shop:index' %}" class="logo">
+                            <img src="{% static 'img/logo.png' %}" alt="">
+                        </a>
+                    </div>
+                </div>
+                <!-- /LOGO -->
+                <!-- SEARCH BAR -->
+                <div class="col-md-6">
+                    <div class="header-search">
+                        <form action="{% url 'search:search_results' %}" method="get">
+                            <select class="input-select">
+                                <option value="0">All Categories</option>
+                                {% for c in all_category %}
+                                <option value="1">{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {{ form.query }}
+                            <button class="search-btn">Search</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /SEARCH BAR -->
+                <!-- ACCOUNT -->
+                <div class="col-md-3 clearfix">
+                    <div class="header-ctn">
+                        <!-- Wishlist -->
+                        <div>
+                            <a href="#">
+                                <i class="fa fa-heart-o"></i>
+                                <span>Your Wishlist</span>
+                                <div class="qty">2</div>
+                            </a>
+                        </div>
+                        <!-- /Wishlist -->
+                        <!-- Cart -->
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <i id="shopping-cart"class="fa fa-shopping-cart"></i>
+                                <span>Your Cart</span>
+                                {% if cart_items %}
+                                {% with cart_item_count as count %}
+                                <div class="qty">{{ count }}</div>
+                                {% endwith %}
+                                {% endif %}
+                            </a>
+                            <div class="cart-dropdown">
+                                <div class="cart-list">
+                                    {% if cart_items %}
+                                    {% for item in cart_items %}
+                                    <div class="product-widget">
+                                        <div class="product-img">
+                                            <img src="{{ item.product.main_image.url }}" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <h3 class="product-name"><a href="{{ item.product.get_absolute_url }}">{{ item.name }}</a></h3>
+                                            <h4 class="product-price"><span class="qty">{{ item.quantity }}x</span>{{ item.price|currency }}</h4>
+                                        </div>
+                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="product-widget">
+                                    <div class="product-body">
+                                        <h3 class="product-name">Your cart is empty.</h3>
+                                    </div>
+                                    {% endif %}
+                                    <div class="cart-summary">
+                                        {% with cart_item_count as count %}
+                                        <small> {{ count }} Item{{ count|pluralize }} selected</small>
+                                        {% endwith %}
+                                        <h5>SUBTOTAL: {{ cart_subtotal|currency }}</h5>
+                                    </div>
+
+                                    <div class="cart-btns">
+                                        <a href="{% url 'cart:cart_detail' %}">View Cart</a>
+                                        <a href="{% url 'checkout:checkout' %}">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Cart -->
+                            <!-- Menu Toogle -->
+                            <div class="menu-toggle">
+                                <a href="#">
+                                    <i class="fa fa-bars"></i>
+                                    <span>Menu</span>
+                                </a>
+                            </div>
+                            <!-- /Menu Toogle -->
+                        </div>
+                    </div>
+                    <!-- /ACCOUNT -->
+                </div>
+                <!-- row -->
+            </div>
+            <!-- container -->
+        </div>
+        <!-- /MAIN HEADER -->
+</header>
+<!-- /HEADER -->
+<!-- NAVIGATION -->
+<nav id="navigation">
+    <!-- container -->
+    <div class="container">
+        <!-- responsive-nav -->
+        <div id="responsive-nav">
+            <!-- NAV -->
+            <ul class="main-nav nav navbar-nav">
+                <li class="active"><a href="{% url 'shop:index' %}">Home</a></li>
+                <li><a href="#">Hot Deals</a></li>
+                <li><a href="#">Categories</a></li>
+                {% for category in all_category %}
+                <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+                {% endfor %}
+                <li><a href="{% url 'shop:product_store' %}">Store</a></li>
+            </ul>
+            <!-- /NAV -->
+        </div>
+        <!-- /responsive-nav -->
+    </div>
+    <!-- /container -->
+</nav>
+<!-- /NAVIGATION -->
